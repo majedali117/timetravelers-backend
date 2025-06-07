@@ -14,7 +14,7 @@ const CareerField = require('../models/CareerField');
 
 /**
  * @swagger
- * /api/v1/mentors:
+ * /mentors:
  *   get:
  *     summary: Get all AI mentors
  *     tags: [Mentors]
@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/mentors/{id}:
+ * /mentors/{id}:
  *   get:
  *     summary: Get AI mentor by ID
  *     tags: [Mentors]
@@ -107,7 +107,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/mentors:
+ * /mentors:
  *   post:
  *     summary: Create a new AI mentor (admin only)
  *     tags: [Mentors]
@@ -213,7 +213,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/mentors/{id}:
+ * /mentors/{id}:
  *   put:
  *     summary: Update AI mentor (admin only)
  *     tags: [Mentors]
@@ -314,7 +314,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/mentors/{id}:
+ * /mentors/{id}:
  *   delete:
  *     summary: Delete AI mentor (admin only)
  *     tags: [Mentors]

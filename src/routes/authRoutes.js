@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/auth/register:
+ * /auth/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Authentication]
@@ -54,7 +54,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/auth/verify-email/{token}:
+ * /auth/verify-email/{token}:
  *   get:
  *     summary: Verify user email address
  *     tags: [Authentication]
@@ -77,7 +77,7 @@ router.get('/verify-email/:token', authController.verifyEmail);
 
 /**
  * @swagger
- * /api/v1/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Authentication]
@@ -115,7 +115,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/auth/refresh-token:
+ * /auth/refresh-token:
  *   post:
  *     summary: Refresh JWT token
  *     tags: [Authentication]
@@ -144,7 +144,7 @@ router.post('/refresh-token', authController.refreshToken);
 
 /**
  * @swagger
- * /api/v1/auth/forgot-password:
+ * /auth/forgot-password:
  *   post:
  *     summary: Send password reset email
  *     tags: [Authentication]
@@ -176,7 +176,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/auth/reset-password/{token}:
+ * /auth/reset-password/{token}:
  *   post:
  *     summary: Reset user password
  *     tags: [Authentication]
@@ -215,7 +215,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/auth/google:
+ * /auth/google:
  *   get:
  *     summary: Initiate Google OAuth authentication
  *     tags: [Authentication]
@@ -230,7 +230,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/auth/google/callback:
+ * /auth/google/callback:
  *   get:
  *     summary: Google OAuth callback
  *     tags: [Authentication]
@@ -248,7 +248,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/auth/apple:
+ * /auth/apple:
  *   get:
  *     summary: Initiate Apple OAuth authentication
  *     tags: [Authentication]
@@ -263,7 +263,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/auth/apple/callback:
+ * /auth/apple/callback:
  *   post:
  *     summary: Apple OAuth callback
  *     tags: [Authentication]
@@ -281,7 +281,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/auth/logout:
+ * /auth/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Authentication]

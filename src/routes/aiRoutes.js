@@ -4,12 +4,12 @@ const { check } = require('express-validator');
 const aiController = require('../controllers/aiController');
 const auth = require('../middleware/authorize');
 
-// @route   GET /api/v1/ai/config
+// @route   GET /ai/config
 // @desc    Get Manus AI configuration
 // @access  Private (Admin only)
 router.get('/config', auth('admin'), aiController.getConfig);
 
-// @route   PUT /api/v1/ai/config
+// @route   PUT /ai/config
 // @desc    Update Manus AI configuration
 // @access  Private (Admin only)
 router.put('/config',
@@ -29,32 +29,32 @@ router.put('/config',
   aiController.updateConfig
 );
 
-// @route   POST /api/v1/ai/initialize
+// @route   POST /ai/initialize
 // @desc    Initialize Manus AI client
 // @access  Private (Admin only)
 router.post('/initialize', auth('admin'), aiController.initializeClient);
 
-// @route   GET /api/v1/ai/usage
+// @route   GET /ai/usage
 // @desc    Get Manus AI usage statistics
 // @access  Private (Admin only)
 router.get('/usage', auth('admin'), aiController.getUsageStats);
 
-// @route   POST /api/v1/ai/sync-mentors
+// @route   POST /ai/sync-mentors
 // @desc    Sync AI mentors from Manus AI
 // @access  Private (Admin only)
 router.post('/sync-mentors', auth('admin'), aiController.syncMentors);
 
-// @route   GET /api/v1/ai/mentors
+// @route   GET /ai/mentors
 // @desc    Get all AI mentors
 // @access  Private
 router.get('/mentors', auth(), aiController.getAllMentors);
 
-// @route   GET /api/v1/ai/mentors/:id
+// @route   GET /ai/mentors/:id
 // @desc    Get AI mentor by ID
 // @access  Private
 router.get('/mentors/:id', auth(), aiController.getMentor);
 
-// @route   POST /api/v1/ai/generate/career-advice
+// @route   POST /ai/generate/career-advice
 // @desc    Generate career advice
 // @access  Private
 router.post('/generate/career-advice',
@@ -65,7 +65,7 @@ router.post('/generate/career-advice',
   aiController.generateCareerAdvice
 );
 
-// @route   POST /api/v1/ai/generate/learning-plan
+// @route   POST /ai/generate/learning-plan
 // @desc    Generate learning plan
 // @access  Private
 router.post('/generate/learning-plan',

@@ -5,12 +5,12 @@ const profileController = require('../controllers/profileController');
 const auth = require('../middleware/authorize');
 const upload = require('../middleware/fileUpload');
 
-// @route   GET /api/v1/profile
+// @route   GET /profile
 // @desc    Get current user profile
 // @access  Private
 router.get('/', auth(), profileController.getProfile);
 
-// @route   PUT /api/v1/profile
+// @route   PUT /profile
 // @desc    Create or update user profile
 // @access  Private
 router.put('/', 
@@ -30,7 +30,7 @@ router.put('/',
   profileController.updateProfile
 );
 
-// @route   POST /api/v1/profile/picture
+// @route   POST /profile/picture
 // @desc    Upload profile picture
 // @access  Private
 router.post('/picture', 
@@ -39,12 +39,12 @@ router.post('/picture',
   profileController.uploadProfilePicture
 );
 
-// @route   GET /api/v1/profile/career-goals
+// @route   GET /profile/career-goals
 // @desc    Get user career goals
 // @access  Private
 router.get('/career-goals', auth(), profileController.getCareerGoals);
 
-// @route   POST /api/v1/profile/career-goals
+// @route   POST /profile/career-goals
 // @desc    Create a career goal
 // @access  Private
 router.post('/career-goals',
@@ -59,7 +59,7 @@ router.post('/career-goals',
   profileController.createCareerGoal
 );
 
-// @route   PUT /api/v1/profile/career-goals/:id
+// @route   PUT /profile/career-goals/:id
 // @desc    Update a career goal
 // @access  Private
 router.put('/career-goals/:id',
@@ -74,17 +74,17 @@ router.put('/career-goals/:id',
   profileController.updateCareerGoal
 );
 
-// @route   DELETE /api/v1/profile/career-goals/:id
+// @route   DELETE /profile/career-goals/:id
 // @desc    Delete a career goal
 // @access  Private
 router.delete('/career-goals/:id', auth(), profileController.deleteCareerGoal);
 
-// @route   GET /api/v1/profile/learning-assessment
+// @route   GET /profile/learning-assessment
 // @desc    Get user learning assessment
 // @access  Private
 router.get('/learning-assessment', auth(), profileController.getLearningAssessment);
 
-// @route   POST /api/v1/profile/learning-assessment
+// @route   POST /profile/learning-assessment
 // @desc    Create a learning assessment
 // @access  Private
 router.post('/learning-assessment',
@@ -99,12 +99,12 @@ router.post('/learning-assessment',
   profileController.createLearningAssessment
 );
 
-// @route   GET /api/v1/profile/skills
+// @route   GET /profile/skills
 // @desc    Get skills
 // @access  Private
 router.get('/skills', auth(), profileController.getSkills);
 
-// @route   GET /api/v1/profile/completeness
+// @route   GET /profile/completeness
 // @desc    Calculate profile completeness
 // @access  Private
 router.get('/completeness', auth(), profileController.calculateProfileCompleteness);

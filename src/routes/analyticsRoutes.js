@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 const analyticsController = require('../controllers/analyticsController');
 const auth = require('../middleware/authorize');
 
-// @route   POST /api/v1/analytics/events
+// @route   POST /analytics/events
 // @desc    Track analytics event
 // @access  Private
 router.post('/events',
@@ -39,27 +39,27 @@ router.post('/events',
   analyticsController.trackEvent
 );
 
-// @route   GET /api/v1/analytics/engagement
+// @route   GET /analytics/engagement
 // @desc    Get user engagement metrics
 // @access  Private (Admin only)
 router.get('/engagement', auth('admin'), analyticsController.getUserEngagementMetrics);
 
-// @route   GET /api/v1/analytics/missions
+// @route   GET /analytics/missions
 // @desc    Get mission completion metrics
 // @access  Private (Admin only)
 router.get('/missions', auth('admin'), analyticsController.getMissionMetrics);
 
-// @route   GET /api/v1/analytics/protocols
+// @route   GET /analytics/protocols
 // @desc    Get protocol progress metrics
 // @access  Private (Admin only)
 router.get('/protocols', auth('admin'), analyticsController.getProtocolMetrics);
 
-// @route   GET /api/v1/analytics/growth
+// @route   GET /analytics/growth
 // @desc    Get user growth metrics
 // @access  Private (Admin only)
 router.get('/growth', auth('admin'), analyticsController.getUserGrowthMetrics);
 
-// @route   POST /api/v1/analytics/reports
+// @route   POST /analytics/reports
 // @desc    Create analytics report
 // @access  Private (Admin only)
 router.post('/reports',
@@ -86,17 +86,17 @@ router.post('/reports',
   analyticsController.createReport
 );
 
-// @route   GET /api/v1/analytics/reports
+// @route   GET /analytics/reports
 // @desc    Get all analytics reports
 // @access  Private
 router.get('/reports', auth(), analyticsController.getAllReports);
 
-// @route   GET /api/v1/analytics/reports/:id
+// @route   GET /analytics/reports/:id
 // @desc    Get analytics report by ID
 // @access  Private
 router.get('/reports/:id', auth(), analyticsController.getReport);
 
-// @route   PUT /api/v1/analytics/reports/:id
+// @route   PUT /analytics/reports/:id
 // @desc    Update analytics report
 // @access  Private
 router.put('/reports/:id',
@@ -119,12 +119,12 @@ router.put('/reports/:id',
   analyticsController.updateReport
 );
 
-// @route   DELETE /api/v1/analytics/reports/:id
+// @route   DELETE /analytics/reports/:id
 // @desc    Delete analytics report
 // @access  Private
 router.delete('/reports/:id', auth(), analyticsController.deleteReport);
 
-// @route   GET /api/v1/analytics/export
+// @route   GET /analytics/export
 // @desc    Export analytics data
 // @access  Private (Admin only)
 router.get('/export', auth('admin'), analyticsController.exportData);

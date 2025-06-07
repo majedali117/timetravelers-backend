@@ -13,7 +13,7 @@ const CareerField = require('../models/CareerField');
 
 /**
  * @swagger
- * /api/v1/career-fields:
+ * /career-fields:
  *   get:
  *     summary: Get all career fields
  *     tags: [CareerFields]
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/career-fields/{id}:
+ * /career-fields/{id}:
  *   get:
  *     summary: Get career field by ID
  *     tags: [CareerFields]
@@ -77,7 +77,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/career-fields:
+ * /career-fields:
  *   post:
  *     summary: Create a new career field (admin only)
  *     tags: [CareerFields]
@@ -204,7 +204,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/career-fields/{id}:
+ * /career-fields/{id}:
  *   put:
  *     summary: Update career field (admin only)
  *     tags: [CareerFields]
@@ -336,7 +336,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/career-fields/{id}:
+ * /career-fields/{id}:
  *   delete:
  *     summary: Delete career field (admin only)
  *     tags: [CareerFields]

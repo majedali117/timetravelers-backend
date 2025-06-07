@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ManusAIConfig = require('../models/ManusAIConfig');
 const AIMentor = require('../models/AIMentor');
 const manusAIClient = require('../services/manusAIClient');
@@ -201,22 +202,20 @@ exports.getAllMentors = async (req, res) => {
     
     const query = { isActive: true };
     
-    // Add search filter
     if (search) {
       query.$text = { $search: search };
     }
     
-    // Add career field filter
-    if (careerField) {
+    // FIXED: Added validation to ensure careerField is a valid ObjectId before using it in the query.
+    // This prevents a CastError that was crashing the server.
+    if (careerField && mongoose.Types.ObjectId.isValid(careerField)) {
       query.careerFields = careerField;
     }
     
-    // Add experience level filter
     if (experienceLevel) {
       query.experienceLevel = experienceLevel;
     }
     
-    // Add teaching style filter
     if (teachingStyle) {
       query.teachingStyle = teachingStyle;
     }
@@ -230,9 +229,11 @@ exports.getAllMentors = async (req, res) => {
     
     const total = await AIMentor.countDocuments(query);
     
+    // This response structure is inconsistent with other endpoints.
+    // A better long-term fix would be to standardize all paginated responses.
     res.json({ 
       success: true, 
-      mentors,
+      data: mentors, // Changed 'mentors' to 'data' for consistency
       pagination: {
         total,
         page: parseInt(page),
@@ -245,6 +246,8 @@ exports.getAllMentors = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
 
 // Generate career advice
 exports.generateCareerAdvice = async (req, res) => {

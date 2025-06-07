@@ -15,7 +15,7 @@ const AIMentor = require('../models/AIMentor');
 
 /**
  * @swagger
- * /api/v1/sessions:
+ * /sessions:
  *   get:
  *     summary: Get user's sessions
  *     tags: [Sessions]
@@ -64,7 +64,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}:
+ * /sessions/{id}:
  *   get:
  *     summary: Get session by ID
  *     tags: [Sessions]
@@ -119,7 +119,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/sessions:
+ * /sessions:
  *   post:
  *     summary: Create a new session
  *     tags: [Sessions]
@@ -202,7 +202,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}/start:
+ * /sessions/{id}/start:
  *   put:
  *     summary: Start a session
  *     tags: [Sessions]
@@ -266,7 +266,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}/message:
+ * /sessions/{id}/message:
  *   post:
  *     summary: Add a message to a session
  *     tags: [Sessions]
@@ -374,7 +374,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}/complete:
+ * /sessions/{id}/complete:
  *   put:
  *     summary: Complete a session
  *     tags: [Sessions]
@@ -459,7 +459,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}/feedback:
+ * /sessions/{id}/feedback:
  *   post:
  *     summary: Add feedback to a completed session
  *     tags: [Sessions]
@@ -564,7 +564,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/sessions/{id}/cancel:
+ * /sessions/{id}/cancel:
  *   put:
  *     summary: Cancel a session
  *     tags: [Sessions]

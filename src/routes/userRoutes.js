@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const authorize = require('../middleware/authorize');
-
+const User = require('../models/User')
 /**
  * @swagger
  * tags:
@@ -12,7 +12,7 @@ const authorize = require('../middleware/authorize');
 
 /**
  * @swagger
- * /api/v1/users/profile:
+ * /users/profile:
  *   get:
  *     summary: Get current user profile
  *     tags: [Users]
@@ -52,7 +52,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/users/profile:
+ * /users/profile:
  *   put:
  *     summary: Update user profile
  *     tags: [Users]
@@ -159,7 +159,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/users/change-password:
+ * /users/change-password:
  *   post:
  *     summary: Change user password
  *     tags: [Users]
@@ -228,7 +228,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/users:
+ * /users:
  *   get:
  *     summary: Get all users (admin only)
  *     tags: [Users]

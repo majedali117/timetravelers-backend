@@ -13,7 +13,7 @@ const LearningStyle = require('../models/LearningStyle');
 
 /**
  * @swagger
- * /api/v1/learning-styles:
+ * /learning-styles:
  *   get:
  *     summary: Get all learning styles
  *     tags: [LearningStyles]
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/learning-styles/{id}:
+ * /learning-styles/{id}:
  *   get:
  *     summary: Get learning style by ID
  *     tags: [LearningStyles]
@@ -77,7 +77,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/learning-styles:
+ * /learning-styles:
  *   post:
  *     summary: Create a new learning style (admin only)
  *     tags: [LearningStyles]
@@ -180,7 +180,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/learning-styles/{id}:
+ * /learning-styles/{id}:
  *   put:
  *     summary: Update learning style (admin only)
  *     tags: [LearningStyles]
@@ -288,7 +288,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/learning-styles/{id}:
+ * /learning-styles/{id}:
  *   delete:
  *     summary: Delete learning style (admin only)
  *     tags: [LearningStyles]

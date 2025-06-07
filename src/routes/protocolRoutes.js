@@ -3,18 +3,19 @@ const router = express.Router();
 const { check } = require('express-validator');
 const protocolController = require('../controllers/protocolController');
 const auth = require('../middleware/authorize');
+const UserProtocol = require('../models/UserProtocol');
 
-// @route   GET /api/v1/protocols/templates
+// @route   GET /protocols/templates
 // @desc    Get all protocol templates
 // @access  Private
 router.get('/templates', auth(), protocolController.getProtocolTemplates);
 
-// @route   GET /api/v1/protocols/templates/:id
+// @route   GET /protocols/templates/:id
 // @desc    Get protocol template by ID
 // @access  Private
 router.get('/templates/:id', auth(), protocolController.getProtocolTemplate);
 
-// @route   POST /api/v1/protocols/templates
+// @route   POST /protocols/templates
 // @desc    Create protocol template
 // @access  Private (Admin only)
 router.post('/templates',
@@ -30,7 +31,7 @@ router.post('/templates',
   protocolController.createProtocolTemplate
 );
 
-// @route   PUT /api/v1/protocols/templates/:id
+// @route   PUT /protocols/templates/:id
 // @desc    Update protocol template
 // @access  Private (Admin only)
 router.put('/templates/:id',
@@ -45,12 +46,12 @@ router.put('/templates/:id',
   protocolController.updateProtocolTemplate
 );
 
-// @route   DELETE /api/v1/protocols/templates/:id
+// @route   DELETE /protocols/templates/:id
 // @desc    Delete protocol template
 // @access  Private (Admin only)
 router.delete('/templates/:id', auth('admin'), protocolController.deleteProtocolTemplate);
 
-// @route   POST /api/v1/protocols/assign
+// @route   POST /protocols/assign
 // @desc    Assign protocol to user
 // @access  Private
 router.post('/assign',
@@ -63,17 +64,17 @@ router.post('/assign',
   protocolController.assignProtocol
 );
 
-// @route   GET /api/v1/protocols/user/:userId?
+// @route   GET /protocols/user/:userId?
 // @desc    Get user protocols
 // @access  Private
 router.get('/user/:userId', auth(), protocolController.getUserProtocols);
 
-// @route   GET /api/v1/protocols/:id
+// @route   GET /protocols/:id
 // @desc    Get user protocol by ID
 // @access  Private
 router.get('/:id', auth(), protocolController.getUserProtocol);
 
-// @route   PUT /api/v1/protocols/:id/milestone
+// @route   PUT /protocols/:id/milestone
 // @desc    Update milestone completion
 // @access  Private
 router.put('/:id/milestone',
@@ -86,7 +87,7 @@ router.put('/:id/milestone',
   protocolController.updateMilestoneCompletion
 );
 
-// @route   PUT /api/v1/protocols/:id/customizations
+// @route   PUT /protocols/:id/customizations
 // @desc    Update protocol customizations
 // @access  Private
 router.put('/:id/customizations',
@@ -97,14 +98,58 @@ router.put('/:id/customizations',
   protocolController.updateCustomizations
 );
 
-// @route   PUT /api/v1/protocols/:id/abandon
+// @route   PUT /protocols/:id/abandon
 // @desc    Abandon protocol
 // @access  Private
 router.put('/:id/abandon', auth(), protocolController.abandonProtocol);
 
-// @route   GET /api/v1/protocols/recommended/:userId?
+// @route   GET /protocols/recommended/:userId?
 // @desc    Get recommended protocols for user
 // @access  Private
 router.get('/recommended/:userId', auth(), protocolController.getRecommendedProtocols);
+
+
+router.get(
+  '/',
+  auth(),
+  async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+      const status = req.query.status;
+      
+      const query = { user: req.user.id };
+      
+      // Add status filter if provided
+      if (status) {
+        query.status = status;
+      }
+      
+      const protocols = await UserProtocol.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('protocol')
+        .populate('mentor', 'name profileImage');
+      
+      const total = await UserProtocol.countDocuments(query);
+      
+      res.status(200).json({
+        success: true,
+        protocols,
+        pagination: {
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching protocols:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+);
 
 module.exports = router;

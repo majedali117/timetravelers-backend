@@ -7,7 +7,7 @@ const auth = require('../middleware/authorize');
 // All routes require admin role
 const adminAuth = auth('admin');
 
-// @route   POST /api/v1/admin/dashboards
+// @route   POST /admin/dashboards
 // @desc    Create admin dashboard
 // @access  Private (Admin only)
 router.post('/dashboards',
@@ -19,17 +19,17 @@ router.post('/dashboards',
   adminController.createDashboard
 );
 
-// @route   GET /api/v1/admin/dashboards
+// @route   GET /admin/dashboards
 // @desc    Get all admin dashboards
 // @access  Private (Admin only)
 router.get('/dashboards', adminAuth, adminController.getAllDashboards);
 
-// @route   GET /api/v1/admin/dashboards/:id
+// @route   GET /admin/dashboards/:id
 // @desc    Get admin dashboard by ID
 // @access  Private (Admin only)
 router.get('/dashboards/:id', adminAuth, adminController.getDashboard);
 
-// @route   PUT /api/v1/admin/dashboards/:id
+// @route   PUT /admin/dashboards/:id
 // @desc    Update admin dashboard
 // @access  Private (Admin only)
 router.put('/dashboards/:id',
@@ -41,17 +41,17 @@ router.put('/dashboards/:id',
   adminController.updateDashboard
 );
 
-// @route   DELETE /api/v1/admin/dashboards/:id
+// @route   DELETE /admin/dashboards/:id
 // @desc    Delete admin dashboard
 // @access  Private (Admin only)
 router.delete('/dashboards/:id', adminAuth, adminController.deleteDashboard);
 
-// @route   GET /api/v1/admin/widget-data
+// @route   GET /admin/widget-data
 // @desc    Get admin dashboard widget data
 // @access  Private (Admin only)
 router.get('/widget-data', adminAuth, adminController.getWidgetData);
 
-// @route   GET /api/v1/admin/system-overview
+// @route   GET /admin/system-overview
 // @desc    Get system overview
 // @access  Private (Admin only)
 router.get('/system-overview', adminAuth, adminController.getSystemOverview);
