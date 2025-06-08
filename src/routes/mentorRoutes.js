@@ -47,12 +47,12 @@ router.get('/', async (req, res) => {
     
     // Build filter object
     const filter = { isActive: true };
-    if (careerField) filter.expertise = careerField;
+    // if (careerField) filter.expertise = careerField;
     if (experienceLevel) filter.experienceLevel = experienceLevel;
     if (teachingStyle) filter.teachingStyle = teachingStyle;
     
     const mentors = await AIMentor.find(filter)
-      .populate('expertise', 'name')
+      //.populate('expertise', 'name')
       .populate('teachingStyle', 'name');
     
     res.status(200).json({

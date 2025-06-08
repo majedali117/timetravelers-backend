@@ -44,4 +44,14 @@ module.exports = {
     privateKeyLocation: process.env.APPLE_PRIVATE_KEY_LOCATION,
     callbackURL: process.env.APPLE_CALLBACK_URL || '/api/v1/auth/apple/callback',
   },
+  gemini: {
+    apiKey: process.env.GOOGLE_GEMINI_API_KEY,
+    model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+    maxTokens: parseInt(process.env.GEMINI_MAX_TOKENS) || 2048,
+    temperature: parseFloat(process.env.GEMINI_TEMPERATURE) || 0.7,
+    rateLimit: {
+      requestsPerMinute: parseInt(process.env.GEMINI_REQUESTS_PER_MINUTE) || 60,
+      requestsPerDay: parseInt(process.env.GEMINI_REQUESTS_PER_DAY) || 1000,
+    },
+  },
 };

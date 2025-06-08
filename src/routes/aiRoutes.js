@@ -4,69 +4,54 @@ const { check } = require('express-validator');
 const aiController = require('../controllers/aiController');
 const auth = require('../middleware/authorize');
 
-// @route   GET /ai/config
-// @desc    Get Manus AI configuration
+// @route   POST /api/v1/ai/initialize
+// @desc    Initialize Google Gemini AI service
 // @access  Private (Admin only)
-router.get('/config', auth('admin'), aiController.getConfig);
+router.post('/initialize', auth('admin'), aiController.initializeService);
 
-// @route   PUT /ai/config
-// @desc    Update Manus AI configuration
-// @access  Private (Admin only)
-router.put('/config',
-  auth('admin'),
-  [
-    check('apiEndpoint', 'API endpoint must be a valid URL').optional().isURL(),
-    check('rateLimit.requestsPerMinute', 'Requests per minute must be a positive number').optional().isInt({ min: 1 }),
-    check('rateLimit.requestsPerDay', 'Requests per day must be a positive number').optional().isInt({ min: 1 }),
-    check('quotaSettings.maxTokensPerRequest', 'Max tokens per request must be a positive number').optional().isInt({ min: 1 }),
-    check('quotaSettings.maxTokensPerDay', 'Max tokens per day must be a positive number').optional().isInt({ min: 1 }),
-    check('cacheSettings.enabled', 'Cache enabled must be a boolean').optional().isBoolean(),
-    check('cacheSettings.ttl', 'Cache TTL must be a positive number').optional().isInt({ min: 1 }),
-    check('retrySettings.maxRetries', 'Max retries must be a positive number').optional().isInt({ min: 0 }),
-    check('retrySettings.initialDelayMs', 'Initial delay must be a positive number').optional().isInt({ min: 1 }),
-    check('retrySettings.maxDelayMs', 'Max delay must be a positive number').optional().isInt({ min: 1 })
-  ],
-  aiController.updateConfig
-);
-
-// @route   POST /ai/initialize
-// @desc    Initialize Manus AI client
-// @access  Private (Admin only)
-router.post('/initialize', auth('admin'), aiController.initializeClient);
-
-// @route   GET /ai/usage
-// @desc    Get Manus AI usage statistics
+// @route   GET /api/v1/ai/usage
+// @desc    Get Gemini AI usage statistics
 // @access  Private (Admin only)
 router.get('/usage', auth('admin'), aiController.getUsageStats);
 
-// @route   POST /ai/sync-mentors
-// @desc    Sync AI mentors from Manus AI
+// @route   GET /api/v1/ai/health
+// @desc    Health check for Gemini AI service
+// @access  Private (Admin only)
+router.get('/health', auth('admin'), aiController.healthCheck);
+
+// @route   POST /api/v1/ai/sync-mentors
+// @desc    Sync AI mentors (load static mentor profiles)
 // @access  Private (Admin only)
 router.post('/sync-mentors', auth('admin'), aiController.syncMentors);
 
-// @route   GET /ai/mentors
+// @route   GET /api/v1/ai/mentors
 // @desc    Get all AI mentors
 // @access  Private
 router.get('/mentors', auth(), aiController.getAllMentors);
 
-// @route   GET /ai/mentors/:id
+// @route   GET /api/v1/ai/mentors/:id
 // @desc    Get AI mentor by ID
 // @access  Private
 router.get('/mentors/:id', auth(), aiController.getMentor);
 
-// @route   POST /ai/generate/career-advice
-// @desc    Generate career advice
+// @route   POST /api/v1/ai/generate/career-advice
+// @desc    Generate career advice using Gemini AI
 // @access  Private
 router.post('/generate/career-advice',
   auth(),
   [
-    check('userProfile', 'User profile is required').notEmpty()
+    check('userProfile', 'User profile is required').notEmpty(),
+    check('userProfile.currentRole', 'Current role is recommended').optional(),
+    check('userProfile.experienceLevel', 'Experience level is recommended').optional(),
+    check('userProfile.skills', 'Skills array is recommended').optional().isArray(),
+    check('userProfile.careerGoals', 'Career goals are recommended').optional(),
+    check('userProfile.industry', 'Industry is recommended').optional()
   ],
   aiController.generateCareerAdvice
 );
 
-// @route   POST /ai/generate/learning-plan
-// @desc    Generate learning plan
+// @route   POST /api/v1/ai/generate/learning-plan
+// @desc    Generate learning plan using Gemini AI
 // @access  Private
 router.post('/generate/learning-plan',
   auth(),
@@ -78,4 +63,29 @@ router.post('/generate/learning-plan',
   aiController.generateLearningPlan
 );
 
+// @route   POST /api/v1/ai/sessions
+// @desc    Create AI mentor session
+// @access  Private
+router.post('/sessions',
+  auth(),
+  [
+    check('mentorId', 'Mentor ID is required').notEmpty(),
+    check('sessionData', 'Session data is required').optional().isObject()
+  ],
+  aiController.createSession
+);
+
+// @route   POST /api/v1/ai/sessions/:sessionId/messages
+// @desc    Send message in AI mentor session
+// @access  Private
+router.post('/sessions/:sessionId/messages',
+  auth(),
+  [
+    check('message', 'Message content is required').notEmpty(),
+    check('context', 'Context object is optional').optional().isObject()
+  ],
+  aiController.sendMessage
+);
+
 module.exports = router;
+

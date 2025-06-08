@@ -1,114 +1,48 @@
-const mongoose = require('mongoose');
-const ManusAIConfig = require('../models/ManusAIConfig');
 const AIMentor = require('../models/AIMentor');
-const manusAIClient = require('../services/manusAIClient');
+const geminiAIService = require('../services/geminiAIService');
 const { validationResult } = require('express-validator');
 
-// Initialize Manus AI client
-exports.initializeClient = async (req, res) => {
+// Initialize Gemini AI service
+exports.initializeService = async (req, res) => {
   try {
-    await manusAIClient.initialize();
-    res.json({ success: true, message: 'Manus AI client initialized successfully' });
+    await geminiAIService.initialize();
+    res.json({ success: true, message: 'Google Gemini AI service initialized successfully' });
   } catch (error) {
-    console.error('Error initializing Manus AI client:', error);
-    res.status(500).json({ message: 'Failed to initialize Manus AI client' });
-  }
-};
-
-// Get Manus AI configuration
-exports.getConfig = async (req, res) => {
-  try {
-    const config = await ManusAIConfig.findOne({ isActive: true });
-    
-    if (!config) {
-      return res.status(404).json({ message: 'No active Manus AI configuration found' });
-    }
-    
-    res.json({ success: true, config });
-  } catch (error) {
-    console.error('Error fetching Manus AI config:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Update Manus AI configuration
-exports.updateConfig = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  
-  try {
-    const {
-      apiKey,
-      apiEndpoint,
-      rateLimit,
-      quotaSettings,
-      cacheSettings,
-      retrySettings
-    } = req.body;
-    
-    // Find active configuration
-    let config = await ManusAIConfig.findOne({ isActive: true });
-    
-    if (config) {
-      // Update existing configuration
-      if (apiKey) config.apiKey = apiKey;
-      if (apiEndpoint) config.apiEndpoint = apiEndpoint;
-      if (rateLimit) config.rateLimit = { ...config.rateLimit, ...rateLimit };
-      if (quotaSettings) config.quotaSettings = { ...config.quotaSettings, ...quotaSettings };
-      if (cacheSettings) config.cacheSettings = { ...config.cacheSettings, ...cacheSettings };
-      if (retrySettings) config.retrySettings = { ...config.retrySettings, ...retrySettings };
-      
-      config.lastUpdated = Date.now();
-      await config.save();
-    } else {
-      // Create new configuration
-      config = new ManusAIConfig({
-        apiKey,
-        apiEndpoint,
-        rateLimit,
-        quotaSettings,
-        cacheSettings,
-        retrySettings
-      });
-      
-      await config.save();
-    }
-    
-    // Re-initialize client with new configuration
-    await manusAIClient.initialize();
-    
-    res.json({ 
-      success: true, 
-      message: 'Manus AI configuration updated successfully',
-      config
+    console.error('Error initializing Gemini AI service:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to initialize Gemini AI service',
+      error: error.message 
     });
-  } catch (error) {
-    console.error('Error updating Manus AI config:', error);
-    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // Get usage statistics
 exports.getUsageStats = async (req, res) => {
   try {
-    const stats = await manusAIClient.getUsageStats();
+    const stats = await geminiAIService.getUsageStats();
     res.json({ success: true, stats });
   } catch (error) {
     console.error('Error fetching usage stats:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch usage statistics',
+      error: error.message 
+    });
   }
 };
 
-// Sync AI mentors from Manus AI
+// Sync AI mentors (now loads static mentor profiles)
 exports.syncMentors = async (req, res) => {
   try {
-    // Get all mentors from Manus AI
-    const mentorsData = await manusAIClient.getAllMentors();
+    // Get all mentors from Gemini AI service (static data)
+    const mentorsData = await geminiAIService.getAllMentors();
     
     if (!mentorsData || !mentorsData.mentors) {
-      return res.status(400).json({ message: 'Invalid response from Manus AI' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Invalid response from Gemini AI service' 
+      });
     }
     
     const mentors = mentorsData.mentors;
@@ -123,7 +57,7 @@ exports.syncMentors = async (req, res) => {
     for (const mentorData of mentors) {
       try {
         // Check if mentor already exists
-        let mentor = await AIMentor.findOne({ manusAIMentorId: mentorData.id });
+        let mentor = await AIMentor.findOne({ geminiMentorId: mentorData.id });
         
         if (mentor) {
           // Update existing mentor
@@ -135,6 +69,7 @@ exports.syncMentors = async (req, res) => {
           mentor.skills = mentorData.skills || mentor.skills;
           mentor.teachingStyle = mentorData.teaching_style || mentor.teachingStyle;
           mentor.communicationStyle = mentorData.communication_style || mentor.communicationStyle;
+          mentor.lastSyncedAt = new Date();
           
           await mentor.save();
           results.updated++;
@@ -145,11 +80,16 @@ exports.syncMentors = async (req, res) => {
             specialization: mentorData.specialization,
             bio: mentorData.bio,
             profileImage: mentorData.profile_image || '/assets/default-mentor.png',
-            manusAIMentorId: mentorData.id,
+            geminiMentorId: mentorData.id, // Changed from manusAIMentorId
+            manusAIMentorId: mentorData.id, 
             experienceLevel: mentorData.experience_level || 'expert',
             skills: mentorData.skills || [],
             teachingStyle: mentorData.teaching_style || 'mentoring',
-            communicationStyle: mentorData.communication_style || 'supportive'
+            communicationStyle: mentorData.communication_style || 'supportive',
+            rating: 4.5, // Default rating
+            reviewCount: 0,
+            isActive: true,
+            lastSyncedAt: new Date()
           });
           
           await mentor.save();
@@ -168,7 +108,11 @@ exports.syncMentors = async (req, res) => {
     });
   } catch (error) {
     console.error('Error syncing AI mentors:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to sync AI mentors',
+      error: error.message 
+    });
   }
 };
 
@@ -178,13 +122,20 @@ exports.getMentor = async (req, res) => {
     const mentor = await AIMentor.findById(req.params.id);
     
     if (!mentor) {
-      return res.status(404).json({ message: 'AI mentor not found' });
+      return res.status(404).json({ 
+        success: false,
+        message: 'AI mentor not found' 
+      });
     }
     
     res.json({ success: true, mentor });
   } catch (error) {
     console.error('Error fetching AI mentor:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch AI mentor',
+      error: error.message 
+    });
   }
 };
 
@@ -193,7 +144,7 @@ exports.getAllMentors = async (req, res) => {
   try {
     const { 
       search, 
-      careerField, 
+      careerField,
       experienceLevel, 
       teachingStyle,
       limit = 20, 
@@ -202,20 +153,31 @@ exports.getAllMentors = async (req, res) => {
     
     const query = { isActive: true };
     
+    // Add search filter
     if (search) {
-      query.$text = { $search: search };
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { careerField: { $regex: search, $options: 'i' } },
+        { bio: { $regex: search, $options: 'i' } },
+        { skills: { $in: [new RegExp(search, 'i')] } }
+      ];
     }
-    
-    // FIXED: Added validation to ensure careerField is a valid ObjectId before using it in the query.
-    // This prevents a CastError that was crashing the server.
+
     if (careerField && mongoose.Types.ObjectId.isValid(careerField)) {
       query.careerFields = careerField;
     }
     
+    // Add specialization filter
+    if (specialization) {
+      query.specialization = { $regex: specialization, $options: 'i' };
+    }
+    
+    // Add experience level filter
     if (experienceLevel) {
       query.experienceLevel = experienceLevel;
     }
     
+    // Add teaching style filter
     if (teachingStyle) {
       query.teachingStyle = teachingStyle;
     }
@@ -223,17 +185,16 @@ exports.getAllMentors = async (req, res) => {
     const skip = (page - 1) * limit;
     
     const mentors = await AIMentor.find(query)
+      .populate('careerFields', 'name') // This will join the name from the CareerField model
       .sort({ rating: -1 })
       .skip(skip)
       .limit(parseInt(limit));
     
     const total = await AIMentor.countDocuments(query);
     
-    // This response structure is inconsistent with other endpoints.
-    // A better long-term fix would be to standardize all paginated responses.
     res.json({ 
       success: true, 
-      data: mentors, // Changed 'mentors' to 'data' for consistency
+      mentors,
       pagination: {
         total,
         page: parseInt(page),
@@ -243,24 +204,37 @@ exports.getAllMentors = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching AI mentors:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch AI mentors',
+      error: error.message 
+    });
   }
 };
-
-
 
 // Generate career advice
 exports.generateCareerAdvice = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ 
+      success: false,
+      errors: errors.array() 
+    });
   }
   
   try {
     const { userProfile } = req.body;
     
-    // Generate career advice
-    const advice = await manusAIClient.generateCareerAdvice(userProfile);
+    // Validate required fields
+    if (!userProfile) {
+      return res.status(400).json({
+        success: false,
+        message: 'User profile is required'
+      });
+    }
+    
+    // Generate career advice using Gemini AI
+    const advice = await geminiAIService.generateCareerAdvice(userProfile);
     
     res.json({ 
       success: true, 
@@ -268,7 +242,11 @@ exports.generateCareerAdvice = async (req, res) => {
     });
   } catch (error) {
     console.error('Error generating career advice:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to generate career advice',
+      error: error.message 
+    });
   }
 };
 
@@ -276,14 +254,25 @@ exports.generateCareerAdvice = async (req, res) => {
 exports.generateLearningPlan = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ 
+      success: false,
+      errors: errors.array() 
+    });
   }
   
   try {
     const { userId, careerGoals, currentSkills } = req.body;
     
-    // Generate learning plan
-    const plan = await manusAIClient.generateLearningPlan(userId, careerGoals, currentSkills);
+    // Validate required fields
+    if (!careerGoals || !currentSkills) {
+      return res.status(400).json({
+        success: false,
+        message: 'Career goals and current skills are required'
+      });
+    }
+    
+    // Generate learning plan using Gemini AI
+    const plan = await geminiAIService.generateLearningPlan(userId, careerGoals, currentSkills);
     
     res.json({ 
       success: true, 
@@ -291,6 +280,114 @@ exports.generateLearningPlan = async (req, res) => {
     });
   } catch (error) {
     console.error('Error generating learning plan:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to generate learning plan',
+      error: error.message 
+    });
   }
 };
+
+// Create AI mentor session
+exports.createSession = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      success: false,
+      errors: errors.array() 
+    });
+  }
+  
+  try {
+    const { mentorId, sessionData } = req.body;
+    const userId = req.user.id; // Assuming user is authenticated
+    
+    // Validate mentor exists
+    const mentor = await AIMentor.findById(mentorId);
+    if (!mentor) {
+      return res.status(404).json({
+        success: false,
+        message: 'AI mentor not found'
+      });
+    }
+    
+    // Create session using Gemini AI service
+    const session = await geminiAIService.createSession(mentorId, userId, sessionData);
+    
+    res.json({ 
+      success: true, 
+      session: session.session
+    });
+  } catch (error) {
+    console.error('Error creating AI mentor session:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to create AI mentor session',
+      error: error.message 
+    });
+  }
+};
+
+// Send message in session
+exports.sendMessage = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      success: false,
+      errors: errors.array() 
+    });
+  }
+  
+  try {
+    const { sessionId } = req.params;
+    const { message, context } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message content is required'
+      });
+    }
+    
+    // Send message using Gemini AI service
+    const response = await geminiAIService.sendMessage(sessionId, message, context);
+    
+    res.json({ 
+      success: true, 
+      message: response.message
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to send message',
+      error: error.message 
+    });
+  }
+};
+
+// Health check endpoint
+exports.healthCheck = async (req, res) => {
+  try {
+    const stats = await geminiAIService.getUsageStats();
+    
+    res.json({
+      success: true,
+      status: 'healthy',
+      service: 'Google Gemini AI',
+      isInitialized: stats.isInitialized,
+      model: stats.model,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      success: false,
+      status: 'unhealthy',
+      service: 'Google Gemini AI',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+

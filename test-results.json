@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-06-07T13:58:43.386Z",
+  "duration": 0.012,
+  "summary": {
+    "total": 9,
+    "passed": 5,
+    "failed": 4,
+    "successRate": "55.6"
+  },
+  "tests": [
+    {
+      "name": "Service Initialization",
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-06-07T13:58:43.374Z"
+    },
+    {
+      "name": "Get All Mentors",
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-06-07T13:58:43.374Z"
+    },
+    {
+      "name": "Get Specific Mentor",
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-06-07T13:58:43.375Z"
+    },
+    {
+      "name": "Generate Career Advice",
+      "passed": false,
+      "error": "fetch is not defined",
+      "timestamp": "2025-06-07T13:58:43.381Z"
+    },
+    {
+      "name": "Generate Learning Plan",
+      "passed": false,
+      "error": "fetch is not defined",
+      "timestamp": "2025-06-07T13:58:43.382Z"
+    },
+    {
+      "name": "Create Session",
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-06-07T13:58:43.383Z"
+    },
+    {
+      "name": "Send Message",
+      "passed": false,
+      "error": "fetch is not defined",
+      "timestamp": "2025-06-07T13:58:43.384Z"
+    },
+    {
+      "name": "Usage Statistics",
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-06-07T13:58:43.384Z"
+    },
+    {
+      "name": "Rate Limiting",
+      "passed": false,
+      "error": "fetch is not defined",
+      "timestamp": "2025-06-07T13:58:43.385Z"
+    }
+  ],
+  "environment": {
+    "nodeVersion": "v16.14.0",
+    "model": "gemini-1.5-flash",
+    "maxTokens": 2048,
+    "temperature": 0.7
+  }
+}
