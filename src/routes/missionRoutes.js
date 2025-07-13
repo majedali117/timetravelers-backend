@@ -57,11 +57,13 @@ router.delete('/templates/:id', auth('admin'), missionController.deleteMissionTe
 // @desc    Assign mission to user
 // @access  Private
 router.post('/assign',
-  auth(),
+  auth('user'),
   [
+    // --- VALIDATION MIDDLEWARE ---
+    // Checks that the request body contains a valid missionId.
     check('missionId', 'Mission ID is required').notEmpty(),
-    check('userId', 'User ID must be valid').optional().isMongoId(),
-    check('mentorId', 'Mentor ID must be valid').optional().isMongoId()
+    check('missionId', 'Please provide a valid Mission ID').isMongoId(),
+    check('mentorId', 'Please provide a valid Mentor ID').optional().isMongoId(),
   ],
   missionController.assignMission
 );

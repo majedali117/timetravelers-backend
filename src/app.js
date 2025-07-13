@@ -61,7 +61,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${config.app.port}${config.app.apiPrefix}`,
+        url: `http://0.0.0.0:${config.app.port}${config.app.apiPrefix}`,
         description: 'Development server'
       }
     ],
