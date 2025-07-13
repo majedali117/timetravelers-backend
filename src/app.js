@@ -24,7 +24,8 @@ mongoose.connect(config.db.uri, config.db.options)
 
 // Security middleware
 app.use(helmet());
-app.use(cors(config.cors));
+// app.use(cors(config.cors));
+app.use(cors({ origin: 'https://agentivebuddy.com:5001' }));
 
 // Rate limiting
 const limiter = rateLimit({
