@@ -47,13 +47,12 @@ router.get('/', async (req, res) => {
     
     // Build filter object
     const filter = { isActive: true };
-    // if (careerField) filter.expertise = careerField;
+    if (careerField) filter.careerFields = careerField;
     if (experienceLevel) filter.experienceLevel = experienceLevel;
     if (teachingStyle) filter.teachingStyle = teachingStyle;
     
     const mentors = await AIMentor.find(filter)
-      //.populate('expertise', 'name')
-      .populate('teachingStyle', 'name');
+      .populate('careerFields', 'name');
     
     res.status(200).json({
       message: 'AI mentors retrieved successfully',
@@ -89,8 +88,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const mentor = await AIMentor.findById(req.params.id)
-      .populate('expertise', 'name description')
-      .populate('teachingStyle', 'name description characteristics');
+      .populate('careerFields', 'name description');
     
     if (!mentor) {
       return res.status(404).json({ message: 'AI mentor not found' });
@@ -363,3 +361,4 @@ router.delete(
 );
 
 module.exports = router;
+

@@ -3,6 +3,7 @@ const UserMission = require('../models/UserMission');
 const User = require('../models/User');
 const AIMentor = require('../models/AIMentor');
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 
 // Get all mission templates
 exports.getMissionTemplates = async (req, res) => {
@@ -638,6 +639,75 @@ exports.getRecommendedMissions = async (req, res) => {
     });
   } catch (error) {
     console.error('Error getting recommended missions:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.getAvailableMissions = async (req, res) => {
+  try {
+    const { 
+      search, 
+      careerField, 
+      difficulty, 
+      type,
+      limit = 20, 
+      page = 1 
+    } = req.query;
+    
+    const query = { isTemplate: false, isActive: true };
+    
+    // Add search filter
+    if (search) {
+      query.$text = { $search: search };
+    }
+    
+    // Add career field filter
+    if (careerField) {
+      query.careerFields = careerField;
+    }
+    
+    // Add difficulty filter
+    if (difficulty) {
+      query.difficulty = difficulty;
+    }
+    
+    // Add type filter
+    if (type) {
+      query.type = type;
+    }
+    
+    const skip = (page - 1) * limit;
+    
+    const missions = await Mission.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('careerFields', 'name');
+    
+    const total = await Mission.countDocuments(query);
+    
+    res.json({ 
+      success: true, 
+      missions,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching available missions:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.getMissionCategories = async (req, res) => {
+  try {
+    const categories = await Mission.distinct('type');
+    res.json({ success: true, categories });
+  } catch (error) {
+    console.error('Error fetching mission categories:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

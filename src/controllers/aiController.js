@@ -312,7 +312,7 @@ exports.createSession = async (req, res) => {
     }
     
     // Create session using Gemini AI service
-    const session = await geminiAIService.createSession(mentorId, userId, sessionData);
+    const session = await geminiAIService.createSession(mentor.geminiMentorId, userId, sessionData);
     
     res.json({ 
       success: true, 

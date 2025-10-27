@@ -76,6 +76,16 @@ router.post('/assign',
 router.get('/user/:userId', auth(), missionController.getUserMissions);
 router.get('/user', auth(), missionController.getUserMissions);
 
+// @route   GET /missions/recommended/:userId?
+// @desc    Get recommended missions for user
+// @access  Private
+router.get('/recommended/:userId', auth(), missionController.getRecommendedMissions);
+
+
+router.get('/available', auth(), missionController.getAvailableMissions);
+
+router.get('/categories', auth(), missionController.getMissionCategories);
+
 // @route   GET /missions/:id
 // @desc    Get user mission by ID
 // @access  Private
@@ -120,11 +130,6 @@ router.post('/:id/mentor-feedback',
 // @desc    Abandon mission
 // @access  Private
 router.put('/:id/abandon', auth(), missionController.abandonMission);
-
-// @route   GET /missions/recommended/:userId?
-// @desc    Get recommended missions for user
-// @access  Private
-router.get('/recommended/:userId', auth(), missionController.getRecommendedMissions);
 
 router.get(
   '/',

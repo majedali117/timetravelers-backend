@@ -169,10 +169,11 @@ router.post(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
-      const { aiMentor, title, description, startTime, duration, topics } = req.body;
-      
+      const { aiMentor, mentorId, title, description, startTime, duration, topics } = req.body;
+      const mentorIdentifier = aiMentor || mentorId;
+
       // Check if AI Mentor exists
-      const mentor = await AIMentor.findById(aiMentor);
+      const mentor = await AIMentor.findById(mentorIdentifier);
       if (!mentor) {
         return res.status(404).json({ message: 'AI Mentor not found' });
       }
@@ -180,10 +181,10 @@ router.post(
       // Create new session
       const session = new Session({
         user: req.user._id,
-        aiMentor,
+        aiMentor: mentorIdentifier,
         title,
         description,
-        startTime,
+        startTime: startTime || new Date(),
         duration,
         topics,
       });
