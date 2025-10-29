@@ -1,5 +1,6 @@
 const AIMentor = require('../models/AIMentor');
 const geminiAIService = require('../services/geminiAIService');
+const CareerAdvice = require('../models/CareerAdvice');
 const { validationResult } = require('express-validator');
 
 // Initialize Gemini AI service
@@ -226,6 +227,15 @@ exports.generateCareerAdvice = async (req, res) => {
     
     // Generate career advice using Gemini AI
     const advice = await geminiAIService.generateCareerAdvice(userProfile);
+
+    // Store the generated advice
+    const newCareerAdvice = new CareerAdvice({
+      user: req.user.id,
+      userProfileSnapshot: userProfile,
+      adviceContent: advice.advice.content,
+      modelUsed: geminiAIService.model.model, // Assuming this is how we get the model name
+    });
+    await newCareerAdvice.save();
     
     res.json({ 
       success: true, 

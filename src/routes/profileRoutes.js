@@ -79,6 +79,11 @@ router.put('/career-goals/:id',
 // @access  Private
 router.delete('/career-goals/:id', auth(), profileController.deleteCareerGoal);
 
+// @route   GET /profile/career-advice
+// @desc    Get user career advice
+// @access  Private
+router.get('/career-advice', auth(), profileController.getCareerAdvice);
+
 // @route   GET /profile/learning-assessment
 // @desc    Get user learning assessment
 // @access  Private

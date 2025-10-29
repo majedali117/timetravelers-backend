@@ -3,6 +3,7 @@ const User = require('../models/User');
 const CareerGoal = require('../models/CareerGoal');
 const LearningAssessment = require('../models/LearningAssessment');
 const Skill = require('../models/Skill');
+const CareerAdvice = require('../models/CareerAdvice');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
@@ -350,6 +351,21 @@ exports.calculateProfileCompleteness = async (req, res) => {
     });
   } catch (error) {
     console.error('Error calculating profile completeness:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get user career advice
+exports.getCareerAdvice = async (req, res) => {
+  try {
+    const careerAdvice = await CareerAdvice.find({ user: req.user.id })
+      .sort({ generatedAt: -1 })
+      .populate('aiMentor', 'name specialization') // Populate mentor details if available
+      .populate('sessionId', 'title'); // Populate session title if available
+    
+    res.json({ success: true, careerAdvice });
+  } catch (error) {
+    console.error('Error fetching career advice:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
