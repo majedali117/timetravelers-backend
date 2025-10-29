@@ -214,19 +214,10 @@ exports.getAllMentors = async (req, res) => {
 
 // Generate career advice
 exports.generateCareerAdvice = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ 
-      success: false,
-      errors: errors.array() 
-    });
-  }
-  
   try {
-    const { userProfile } = req.body;
-    
-    // Validate required fields
-    if (!userProfile) {
+    const userProfile = req.body.userProfile || req.body;
+
+    if (!userProfile || Object.keys(userProfile).length === 0) {
       return res.status(400).json({
         success: false,
         message: 'User profile is required'

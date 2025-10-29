@@ -39,14 +39,6 @@ router.get('/mentors/:id', auth(), aiController.getMentor);
 // @access  Private
 router.post('/generate/career-advice',
   auth(),
-  [
-    check('userProfile', 'User profile is required').notEmpty(),
-    check('userProfile.currentRole', 'Current role is recommended').optional(),
-    check('userProfile.experienceLevel', 'Experience level is recommended').optional(),
-    check('userProfile.skills', 'Skills array is recommended').optional().isArray(),
-    check('userProfile.careerGoals', 'Career goals are recommended').optional(),
-    check('userProfile.industry', 'Industry is recommended').optional()
-  ],
   aiController.generateCareerAdvice
 );
 

@@ -4,6 +4,8 @@ const passport = require('passport');
 const authorize = require('../middleware/authorize');
 const AIMentor = require('../models/AIMentor');
 const CareerField = require('../models/CareerField');
+const { check } = require('express-validator');
+const aiController = require('../controllers/aiController');
 
 /**
  * @swagger
@@ -11,6 +13,40 @@ const CareerField = require('../models/CareerField');
  *   name: Mentors
  *   description: AI Mentor management and interaction
  */
+
+/**
+ * @swagger
+ * /mentors/career-advice:
+ *   post:
+ *     summary: Generate career advice using Gemini AI
+ *     tags: [Mentors]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userProfile
+ *             properties:
+ *               userProfile:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Career advice generated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post('/career-advice',
+  passport.authenticate('jwt', { session: false }),
+  aiController.generateCareerAdvice
+);
 
 /**
  * @swagger
@@ -361,4 +397,7 @@ router.delete(
 );
 
 module.exports = router;
+
+
+
 
