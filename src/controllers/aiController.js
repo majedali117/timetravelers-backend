@@ -217,12 +217,24 @@ exports.getAllMentors = async (req, res) => {
 exports.generateCareerAdvice = async (req, res) => {
   try {
     const userProfile = req.body.userProfile || req.body;
+    const { mentorId } = req.body; // Extract mentorId from request body
 
     if (!userProfile || Object.keys(userProfile).length === 0) {
       return res.status(400).json({
         success: false,
         message: 'User profile is required'
       });
+    }
+
+    let aiMentor = null;
+    let mentorName = null;
+
+    if (mentorId) {
+      const mentor = await AIMentor.findById(mentorId);
+      if (mentor) {
+        aiMentor = mentor._id;
+        mentorName = mentor.name;
+      }
     }
     
     // Generate career advice using Gemini AI
@@ -231,6 +243,8 @@ exports.generateCareerAdvice = async (req, res) => {
     // Store the generated advice
     const newCareerAdvice = new CareerAdvice({
       user: req.user.id,
+      aiMentor: aiMentor,
+      mentorName: mentorName,
       userProfileSnapshot: userProfile,
       adviceContent: advice.advice.content,
       modelUsed: geminiAIService.model.model, // Assuming this is how we get the model name

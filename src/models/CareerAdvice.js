@@ -11,6 +11,10 @@ const careerAdviceSchema = new mongoose.Schema({
     ref: 'AIMentor',
     // Not required, as advice might be generated without a specific mentor context
   },
+  mentorName: {
+    type: String,
+    // Not required, as advice might be generated without a specific mentor context
+  },
   userProfileSnapshot: {
     type: Object,
     required: true,
