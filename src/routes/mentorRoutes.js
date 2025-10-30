@@ -50,6 +50,55 @@ router.post('/career-advice',
 
 /**
  * @swagger
+ * /mentors/learning-plan:
+ *   post:
+ *     summary: Generate learning plan using Gemini AI
+ *     tags: [Mentors]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - careerGoals
+ *               - currentSkills
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               careerGoals:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               currentSkills:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Learning plan generated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post('/learning-plan',
+  passport.authenticate('jwt', { session: false }),
+  [
+    check('userId', 'User ID is required').notEmpty(),
+    check('careerGoals', 'Career goals are required').notEmpty(),
+    check('currentSkills', 'Current skills are required').notEmpty()
+  ],
+  aiController.generateLearningPlan
+);
+
+/**
+ * @swagger
  * /mentors:
  *   get:
  *     summary: Get all AI mentors

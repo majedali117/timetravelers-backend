@@ -288,7 +288,7 @@ exports.generateLearningPlan = async (req, res) => {
     
     // Generate learning plan using Gemini AI
     const plan = await geminiAIService.generateLearningPlan(userId, careerGoals, currentSkills);
-    
+    console.log(plan)
     res.json({ 
       success: true, 
       plan
