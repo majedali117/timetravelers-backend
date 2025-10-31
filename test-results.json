@@ -1,71 +1,71 @@
 {
-  "timestamp": "2025-06-07T13:58:43.386Z",
-  "duration": 0.012,
+  "timestamp": "2025-10-31T16:46:23.568Z",
+  "duration": 59.33,
   "summary": {
     "total": 9,
-    "passed": 5,
-    "failed": 4,
-    "successRate": "55.6"
+    "passed": 9,
+    "failed": 0,
+    "successRate": "100.0"
   },
   "tests": [
     {
       "name": "Service Initialization",
       "passed": true,
       "error": null,
-      "timestamp": "2025-06-07T13:58:43.374Z"
+      "timestamp": "2025-10-31T16:45:24.238Z"
     },
     {
       "name": "Get All Mentors",
       "passed": true,
       "error": null,
-      "timestamp": "2025-06-07T13:58:43.374Z"
+      "timestamp": "2025-10-31T16:45:24.240Z"
     },
     {
       "name": "Get Specific Mentor",
       "passed": true,
       "error": null,
-      "timestamp": "2025-06-07T13:58:43.375Z"
+      "timestamp": "2025-10-31T16:45:24.241Z"
     },
     {
       "name": "Generate Career Advice",
-      "passed": false,
-      "error": "fetch is not defined",
-      "timestamp": "2025-06-07T13:58:43.381Z"
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-10-31T16:45:46.624Z"
     },
     {
       "name": "Generate Learning Plan",
-      "passed": false,
-      "error": "fetch is not defined",
-      "timestamp": "2025-06-07T13:58:43.382Z"
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-10-31T16:46:15.404Z"
     },
     {
       "name": "Create Session",
       "passed": true,
       "error": null,
-      "timestamp": "2025-06-07T13:58:43.383Z"
+      "timestamp": "2025-10-31T16:46:15.404Z"
     },
     {
       "name": "Send Message",
-      "passed": false,
-      "error": "fetch is not defined",
-      "timestamp": "2025-06-07T13:58:43.384Z"
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-10-31T16:46:21.212Z"
     },
     {
       "name": "Usage Statistics",
       "passed": true,
       "error": null,
-      "timestamp": "2025-06-07T13:58:43.384Z"
+      "timestamp": "2025-10-31T16:46:21.212Z"
     },
     {
       "name": "Rate Limiting",
-      "passed": false,
-      "error": "fetch is not defined",
-      "timestamp": "2025-06-07T13:58:43.385Z"
+      "passed": true,
+      "error": null,
+      "timestamp": "2025-10-31T16:46:23.567Z"
     }
   ],
   "environment": {
-    "nodeVersion": "v16.14.0",
-    "model": "gemini-1.5-flash",
+    "nodeVersion": "v20.19.4",
+    "model": "gemini-2.5-flash",
     "maxTokens": 2048,
     "temperature": 0.7
   }

@@ -47,7 +47,7 @@ module.exports = {
   gemini: {
     apiKey: process.env.GOOGLE_GEMINI_API_KEY,
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    maxTokens: parseInt(process.env.GEMINI_MAX_TOKENS) || 2048,
+    maxTokens: parseInt(process.env.GEMINI_MAX_TOKENS) || 1024,
     temperature: parseFloat(process.env.GEMINI_TEMPERATURE) || 0.7,
     rateLimit: {
       requestsPerMinute: parseInt(process.env.GEMINI_REQUESTS_PER_MINUTE) || 60,
