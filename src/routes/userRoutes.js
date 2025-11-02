@@ -203,9 +203,15 @@ router.post(
           message: `This account uses ${req.user.authMethod} authentication and cannot change password directly.`,
         });
       }
+
+      // Get user from DB and select password
+      const user = await User.findById(req.user.id).select('+password');
+      if (!user) {
+        return res.status(401).json({ message: 'User not found' });
+      }
       
       // Verify current password
-      const isMatch = await req.user.comparePassword(currentPassword);
+      const isMatch = await user.comparePassword(currentPassword);
       if (!isMatch) {
         return res.status(401).json({ message: 'Current password is incorrect' });
       }
@@ -216,8 +222,8 @@ router.post(
       }
       
       // Update password
-      req.user.password = newPassword;
-      await req.user.save();
+      user.password = newPassword;
+      await user.save();
       
       res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
