@@ -29,6 +29,7 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
   
@@ -40,6 +41,8 @@ exports.updateProfile = async (req, res) => {
       workExperience,
       careerGoals,
       learningPreferences,
+      learningStyle,
+      experienceLevel,
       skills,
       interests,
       languages,
@@ -57,6 +60,8 @@ exports.updateProfile = async (req, res) => {
     if (workExperience) profileFields.workExperience = workExperience;
     if (careerGoals) profileFields.careerGoals = careerGoals;
     if (learningPreferences) profileFields.learningPreferences = learningPreferences;
+    if (learningStyle) profileFields.learningStyle = learningStyle;
+    if (experienceLevel) profileFields.experienceLevel = experienceLevel;
     if (skills) profileFields.skills = skills;
     if (interests) profileFields.interests = interests;
     if (languages) profileFields.languages = languages;

@@ -18,14 +18,16 @@ router.put('/',
   [
     check('bio', 'Bio cannot exceed 500 characters').optional().isLength({ max: 500 }),
     check('location.city', 'City must be a string').optional().isString(),
-    check('location.country', 'Country must be a string').optional().isString(),
+    check('location.country', 'Country must be a string').optional({ checkFalsy: true }).isString(),
     check('education.*.institution', 'Institution is required').optional().notEmpty(),
     check('education.*.degree', 'Degree is required').optional().notEmpty(),
     check('workExperience.*.company', 'Company is required').optional().notEmpty(),
     check('workExperience.*.position', 'Position is required').optional().notEmpty(),
     check('skills.*.name', 'Skill name is required').optional().notEmpty(),
     check('skills.*.level', 'Skill level must be valid').optional().isIn(['beginner', 'intermediate', 'advanced', 'expert']),
-    check('visibility', 'Visibility must be valid').optional().isIn(['public', 'private', 'connections'])
+    check('visibility', 'Visibility must be valid').optional().isIn(['public', 'private', 'connections']),
+    check('learningStyle', 'Learning style must be valid').optional().isIn(['visual', 'auditory', 'reading', 'kinesthetic', 'multimodal']),
+    check('experienceLevel', 'Experience level must be valid').optional().isIn(['beginner', 'intermediate', 'advanced', 'expert'])
   ],
   profileController.updateProfile
 );

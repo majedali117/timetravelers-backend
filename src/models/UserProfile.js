@@ -54,6 +54,14 @@ const userProfileSchema = new mongoose.Schema({
       enum: ['slow', 'moderate', 'fast']
     }
   },
+  learningStyle: {
+    type: String,
+    enum: ['visual', 'auditory', 'reading', 'kinesthetic', 'multimodal']
+  },
+  experienceLevel: {
+    type: String,
+    enum: ['beginner', 'intermediate', 'advanced', 'expert']
+  },
   skills: [{
     name: String,
     level: {
