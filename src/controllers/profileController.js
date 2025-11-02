@@ -12,7 +12,7 @@ const path = require('path');
 exports.getProfile = async (req, res) => {
   try {
     // Find profile by user ID
-    const userProfile = await UserProfile.findOne({ user: req.user.id });
+    const userProfile = await UserProfile.findOne({ user: req.user.id }).populate('user');
     
     if (!userProfile) {
       return res.status(404).json({ message: 'Profile not found' });
