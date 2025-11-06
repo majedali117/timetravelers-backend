@@ -199,7 +199,8 @@ exports.assignMission = async (req, res) => {
   }
   
   try {
-    const { missionId, userId, mentorId } = req.body;
+    const { userId, mentorId } = req.body;
+    const { id: missionId } = req.params;
     
     // Check if mission exists
     const mission = await Mission.findOne({ 
@@ -279,10 +280,8 @@ exports.getUserMissions = async (req, res) => {
     }
     
     // Add active filter
-    if (req.query.isActive === 'false') {
-      query.isActive = false;
-    } else {
-      query.isActive = true;
+    if (req.query.isActive !== undefined) {
+      query.isActive = req.query.isActive === 'true';
     }
     
     const skip = (page - 1) * limit;
@@ -296,6 +295,7 @@ exports.getUserMissions = async (req, res) => {
     
     const total = await UserMission.countDocuments(query);
     
+    console.log('userMissions', userMissions);
     res.json({ 
       success: true, 
       missions: userMissions,
@@ -655,8 +655,17 @@ exports.getAvailableMissions = async (req, res) => {
       limit = 20, 
       page = 1 
     } = req.query;
-    
-    const query = { isActive: true };
+
+    const userId = req.user.id;
+
+    // Get all mission IDs assigned to the user
+    const assignedMissions = await UserMission.find({ user: userId }).select('mission');
+    const assignedMissionIds = assignedMissions.map(um => um.mission);
+
+    const query = { 
+      isActive: true,
+      _id: { $nin: assignedMissionIds } // Exclude assigned missions
+    };
     
     // Add search filter
     if (search) {
@@ -713,3 +722,4 @@ exports.getMissionCategories = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
