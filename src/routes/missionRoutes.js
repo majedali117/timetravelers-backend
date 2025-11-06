@@ -131,47 +131,6 @@ router.post('/:id/mentor-feedback',
 // @access  Private
 router.put('/:id/abandon', auth(), missionController.abandonMission);
 
-router.get(
-  '/',
-  auth(),
-  async (req, res) => {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
-      const status = req.query.status;
-      
-      const query = { user: req.user.id };
-      
-      // Add status filter if provided
-      if (status) {
-        query.status = status;
-      }
-      
-      const missions = await UserMission.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate('mission')
-        .populate('mentor', 'name profileImage');
-      
-      const total = await UserMission.countDocuments(query);
-      
-      res.status(200).json({
-        success: true,
-        missions,
-        pagination: {
-          total,
-          page,
-          limit,
-          pages: Math.ceil(total / limit)
-        }
-      });
-    } catch (error) {
-      console.error('Error fetching missions:', error);
-      res.status(500).json({ message: 'Server error', error: error.message });
-    }
-  }
-);
+router.get('/', auth(), missionController.getUserMissions);
 
 module.exports = router;

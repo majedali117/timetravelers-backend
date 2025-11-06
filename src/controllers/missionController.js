@@ -269,7 +269,7 @@ exports.assignMission = async (req, res) => {
 exports.getUserMissions = async (req, res) => {
   try {
     const userId = req.params.userId || req.user.id;
-    const { status, isActive = true, limit = 20, page = 1 } = req.query;
+    const { status, limit = 20, page = 1 } = req.query;
     
     const query = { user: userId };
     
@@ -279,8 +279,10 @@ exports.getUserMissions = async (req, res) => {
     }
     
     // Add active filter
-    if (isActive !== undefined) {
-      query.isActive = isActive === 'true';
+    if (req.query.isActive === 'false') {
+      query.isActive = false;
+    } else {
+      query.isActive = true;
     }
     
     const skip = (page - 1) * limit;
@@ -289,7 +291,7 @@ exports.getUserMissions = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('mission', 'title description type difficulty estimatedDuration')
+      .populate('mission')
       .populate('mentor', 'name profileImage');
     
     const total = await UserMission.countDocuments(query);
@@ -654,7 +656,7 @@ exports.getAvailableMissions = async (req, res) => {
       page = 1 
     } = req.query;
     
-    const query = { isTemplate: false, isActive: true };
+    const query = { isActive: true };
     
     // Add search filter
     if (search) {
@@ -685,7 +687,7 @@ exports.getAvailableMissions = async (req, res) => {
       .populate('careerFields', 'name');
     
     const total = await Mission.countDocuments(query);
-    
+    console.log('missions',missions);
     res.json({ 
       success: true, 
       missions,
