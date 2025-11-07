@@ -363,12 +363,22 @@ exports.getUserMission = async (req, res) => {
     }
     
     // Regular mission lookup by ID
-    const userMission = await UserMission.findOne({
+    let userMission = await UserMission.findOne({
       _id: missionId,
       user: req.user.id
     })
     .populate('mission')
     .populate('mentor', 'name profileImage');
+
+    if (!userMission) {
+      // If not found by userMissionId, try to find by missionId
+      userMission = await UserMission.findOne({
+        mission: missionId,
+        user: req.user.id
+      })
+      .populate('mission')
+      .populate('mentor', 'name profileImage');
+    }
     
     if (!userMission) {
       return res.status(404).json({ message: 'User mission not found' });
